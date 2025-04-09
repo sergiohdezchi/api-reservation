@@ -1,5 +1,6 @@
 package com.helier.api_reservations.dto;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import jakarta.validation.Valid;
@@ -12,6 +13,8 @@ public class ReservationDTO {
     private List<PassengerDTO> passengers;
     @Valid
     private ItineraryDTO itinerary;
+
+    private LocalDate creationDate;
 
     public Long getId() {
         return id;
@@ -35,5 +38,13 @@ public class ReservationDTO {
 
     public void setItinerary(ItineraryDTO itinerary) {
         this.itinerary = itinerary;
+    }
+
+    public LocalDate getCreationDate() {
+        return creationDate;
+    }
+
+    public void setCreationDate(LocalDate creationDate) {
+        this.creationDate = creationDate;
     }
 }

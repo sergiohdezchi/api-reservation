@@ -3,6 +3,7 @@ package com.helier.api_reservations.service;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 
 import org.springframework.core.convert.ConversionService;
 import org.springframework.stereotype.Service;
@@ -15,6 +16,12 @@ import com.helier.api_reservations.enums.APIError;
 import com.helier.api_reservations.exceotion.ApiException;
 import com.helier.api_reservations.model.Reservation;
 import com.helier.api_reservations.repository.ReservationRepository;
+
+import jakarta.validation.ConstraintViolation;
+import jakarta.validation.ConstraintViolationException;
+import jakarta.validation.Validation;
+import jakarta.validation.Validator;
+import jakarta.validation.ValidatorFactory;
 
 @Service
 public class ReservationService {
@@ -32,11 +39,11 @@ public class ReservationService {
     }
 
     public List<ReservationDTO> getAllReservations() {
-        return conversionService.convert(reservationRepository.getReservations(), List.class);
+        return conversionService.convert(reservationRepository.findAll(), List.class);
     }
 
     public ReservationDTO getReservationById(Long id) {
-        Optional<Reservation> reservation = reservationRepository.getReservationById(id);
+        Optional<Reservation> reservation = reservationRepository.findById(id);
 
         if (reservation.isEmpty()) {
             throw new ApiException(APIError.RESERVATION_NOT_FOUND);
@@ -53,7 +60,8 @@ public class ReservationService {
 
         checkCity(reservation);
         Reservation transformed = conversionService.convert(reservation, Reservation.class);
-        Reservation createdReservation = reservationRepository.saveReservation(Objects.requireNonNull(transformed));
+        validateEntity(transformed);
+        Reservation createdReservation = reservationRepository.save(Objects.requireNonNull(transformed));
         return conversionService.convert(createdReservation, ReservationDTO.class);
 
     }
@@ -65,8 +73,8 @@ public class ReservationService {
 
         checkCity(reservation);
         Reservation transformed = conversionService.convert(reservation, Reservation.class);
-        Reservation updatedReservation = reservationRepository.updateReservation(id,
-                Objects.requireNonNull(transformed));
+        validateEntity(transformed);
+        Reservation updatedReservation = reservationRepository.save(Objects.requireNonNull(transformed));
         return conversionService.convert(updatedReservation, ReservationDTO.class);
     }
 
@@ -74,7 +82,7 @@ public class ReservationService {
         if (getReservationById(id) == null) {
             throw new ApiException(APIError.RESERVATION_NOT_FOUND);
         }
-        reservationRepository.deleteReservation(id);
+        reservationRepository.deleteById(id);
     }
 
     private void checkCity(ReservationDTO reservation) {
@@ -87,6 +95,15 @@ public class ReservationService {
             } else {
                 System.out.println("City found: " + origin.getCity_name() + " - " + destination.getCity_name());
             }
+        }
+    }
+
+    public void validateEntity(Reservation transformed) {
+        ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
+        Validator validator = factory.getValidator();
+        Set<ConstraintViolation<Reservation>> violations = validator.validate(transformed);
+        if (!violations.isEmpty()) {
+           throw new ConstraintViolationException(violations);
         }
     }
 }

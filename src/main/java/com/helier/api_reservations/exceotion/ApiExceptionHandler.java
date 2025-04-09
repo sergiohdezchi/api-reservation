@@ -16,8 +16,11 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 import com.helier.api_reservations.dto.ErrorDTO;
 import com.helier.api_reservations.enums.APIError;
 
+import jakarta.validation.ConstraintViolationException;
+
 @RestControllerAdvice
 public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
+
     @ExceptionHandler(ApiException.class)
     public ResponseEntity<ErrorDTO> duplicateResource(ApiException ex, WebRequest request) {
         return ResponseEntity.status(ex.getStatus()).body(new ErrorDTO(ex.getDescription(), ex.getReasons()));
@@ -35,4 +38,14 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
         return ResponseEntity.status(APIError.VALIDATION_ERROR.getHttpStatus())
                 .body(new ErrorDTO(APIError.VALIDATION_ERROR.getMessage(), reasons));
     }
+
+    @ExceptionHandler(ConstraintViolationException.class)
+    public ResponseEntity<ErrorDTO> handleConstraintViolationException(ConstraintViolationException ex, WebRequest request) {
+        List<String> reasons = new ArrayList<>();
+        ex.getConstraintViolations().forEach(violation -> reasons.add(violation.getPropertyPath() + ": " + violation.getMessage()));
+
+        return ResponseEntity.status(APIError.VALIDATION_ERROR.getHttpStatus())
+                .body(new ErrorDTO(APIError.VALIDATION_ERROR.getMessage(), reasons));
+    }
+
 }

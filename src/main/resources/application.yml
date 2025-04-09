@@ -1,6 +1,10 @@
 spring:
   application:
     name: api-reservations
+  datasource:
+    url: jdbc:postgresql://localhost:5432/spring_flight_reservations
+    username: postgres
+    password: 123456ab
 
 
 management:
@@ -46,9 +50,9 @@ http-connector:
       endpoints:
         get-city:
           url: "/api/v2/places?q=#{code}"
-          readTimeout: 1
-          writeTimeout: 1
-          connectionTimeout: 1
+          readTimeout: 3000
+          writeTimeout: 3000
+          connectionTimeout: 3000
 
 resilience4j:
   circuitbreaker:
