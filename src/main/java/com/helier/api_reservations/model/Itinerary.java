@@ -46,7 +46,7 @@ public class Itinerary extends Base {
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result + ((getId() == null) ? 0 : getId() .hashCode());
+        result = prime * result + ((getId() == null) ? 0 : getId().hashCode());
         result = prime * result + ((segments == null) ? 0 : segments.hashCode());
         result = prime * result + ((price == null) ? 0 : price.hashCode());
         return result;

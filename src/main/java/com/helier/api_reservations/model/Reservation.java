@@ -14,14 +14,17 @@ import jakarta.persistence.EntityListeners;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.OrderBy;
 import jakarta.validation.Valid;
 
 import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 
 @Entity
 @EntityListeners(ReservationEntityListener.class)
 public class Reservation extends Base {
 
+    @OrderBy("lastName ASC")
     @Valid
     @NotEmpty(message = "You must have at least one passenger")
     @OneToMany
@@ -30,7 +33,7 @@ public class Reservation extends Base {
     private List<Passenger> passengers;
 
     @Valid
-    @NotEmpty(message = "You must have at least one itinerary")
+    @NotNull(message = "You must have at least one itinerary")
     @ManyToOne
     @Cascade(CascadeType.ALL)
     @JoinColumn(name = "itinerary_id")
@@ -108,7 +111,7 @@ public class Reservation extends Base {
 
     @Override
     public String toString() {
-        return "Reservation [id=" + getId() + ", passengers=" + passengers + ", itinerary=" + itinerary + ", creationDate="
-                + creationDate + "]";
+        return "Reservation [id=" + getId() + ", passengers=" + passengers + ", itinerary=" + itinerary
+                + ", creationDate=" + creationDate + "]";
     }
 }

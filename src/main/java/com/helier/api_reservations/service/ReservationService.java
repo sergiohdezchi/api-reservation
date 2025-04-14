@@ -5,17 +5,23 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 
+
 import org.springframework.core.convert.ConversionService;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.helier.api_reservations.connector.CatalogConnector;
 import com.helier.api_reservations.connector.response.CityDTO;
+import com.helier.api_reservations.dao.ReservationDao;
 import com.helier.api_reservations.dto.ReservationDTO;
+import com.helier.api_reservations.dto.SearchReservationCriteriaDTO;
 import com.helier.api_reservations.dto.SegementDTO;
 import com.helier.api_reservations.enums.APIError;
 import com.helier.api_reservations.exceotion.ApiException;
 import com.helier.api_reservations.model.Reservation;
 import com.helier.api_reservations.repository.ReservationRepository;
+import com.helier.api_reservations.service.specification.ReservationSpecification;
 
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
@@ -38,8 +44,9 @@ public class ReservationService {
         this.catalogConnector = catalogConnector;
     }
 
-    public List<ReservationDTO> getAllReservations() {
-        return conversionService.convert(reservationRepository.findAll(), List.class);
+    public List<ReservationDTO> getAllReservations(SearchReservationCriteriaDTO criteria) {
+        Pageable pageable = PageRequest.of(criteria.getCurrentPage(), criteria.getPageSize());
+        return conversionService.convert(reservationRepository.findAll(ReservationSpecification.withSearchCriteria(criteria), pageable), List.class);
     }
 
     public ReservationDTO getReservationById(Long id) {
@@ -67,7 +74,7 @@ public class ReservationService {
     }
 
     public ReservationDTO updateReservation(Long id, ReservationDTO reservation) {
-        if (getReservationById(id) == null) {
+        if (!reservationRepository.existsById(id)) {
             throw new ApiException(APIError.RESERVATION_NOT_FOUND);
         }
 
@@ -79,7 +86,7 @@ public class ReservationService {
     }
 
     public void deleteReservation(Long id) {
-        if (getReservationById(id) == null) {
+        if (!reservationRepository.existsById(id)) {
             throw new ApiException(APIError.RESERVATION_NOT_FOUND);
         }
         reservationRepository.deleteById(id);
@@ -103,7 +110,7 @@ public class ReservationService {
         Validator validator = factory.getValidator();
         Set<ConstraintViolation<Reservation>> violations = validator.validate(transformed);
         if (!violations.isEmpty()) {
-           throw new ConstraintViolationException(violations);
+            throw new ConstraintViolationException(violations);
         }
     }
 }

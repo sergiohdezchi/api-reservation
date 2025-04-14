@@ -40,9 +40,11 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
     @ExceptionHandler(ConstraintViolationException.class)
-    public ResponseEntity<ErrorDTO> handleConstraintViolationException(ConstraintViolationException ex, WebRequest request) {
+    public ResponseEntity<ErrorDTO> handleConstraintViolationException(ConstraintViolationException ex,
+            WebRequest request) {
         List<String> reasons = new ArrayList<>();
-        ex.getConstraintViolations().forEach(violation -> reasons.add(violation.getPropertyPath() + ": " + violation.getMessage()));
+        ex.getConstraintViolations()
+                .forEach(violation -> reasons.add(violation.getPropertyPath() + ": " + violation.getMessage()));
 
         return ResponseEntity.status(APIError.VALIDATION_ERROR.getHttpStatus())
                 .body(new ErrorDTO(APIError.VALIDATION_ERROR.getMessage(), reasons));

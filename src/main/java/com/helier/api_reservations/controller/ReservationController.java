@@ -1,10 +1,12 @@
 package com.helier.api_reservations.controller;
 
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.helier.api_reservations.controller.resource.ReservationResource;
 import com.helier.api_reservations.dto.ReservationDTO;
+import com.helier.api_reservations.dto.SearchReservationCriteriaDTO;
 import com.helier.api_reservations.exceotion.ApiException;
 import com.helier.api_reservations.service.ReservationService;
 
@@ -16,6 +18,7 @@ import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.repository.query.Param;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -40,9 +43,9 @@ public class ReservationController implements ReservationResource {
     }
 
     @GetMapping
-    public ResponseEntity<List<ReservationDTO>> getReservations() {
+    public ResponseEntity<List<ReservationDTO>> getReservations(SearchReservationCriteriaDTO criteria) {
         LOGGER.info("Obtain all the reservations");
-        List<ReservationDTO> response = reservationService.getAllReservations();
+        List<ReservationDTO> response = reservationService.getAllReservations(criteria);
 
         return new ResponseEntity<>(response, HttpStatus.OK);
     }

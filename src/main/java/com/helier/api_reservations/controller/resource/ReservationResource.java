@@ -9,6 +9,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 
 import com.helier.api_reservations.dto.ErrorDTO;
 import com.helier.api_reservations.dto.ReservationDTO;
+import com.helier.api_reservations.dto.SearchReservationCriteriaDTO;
+
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
@@ -25,7 +27,7 @@ public interface ReservationResource {
     @Operation(description = "Get the information of all the reservations", responses = {
             @ApiResponse(responseCode = "200", description = "Return the information of all the reservations", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = List.class))),
             @ApiResponse(responseCode = "500", description = "Something bad happens to obtain th reservations", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorDTO.class))), })
-    public ResponseEntity<List<ReservationDTO>> getReservations();
+    public ResponseEntity<List<ReservationDTO>> getReservations(SearchReservationCriteriaDTO criteria);
 
     @Operation(description = "Get the information about one reservation", responses = {
             @ApiResponse(responseCode = "200", description = "Return the information of one reservation", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ReservationDTO.class))),

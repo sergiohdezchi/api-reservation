@@ -118,7 +118,7 @@ public class Segment extends Base {
 
     @Override
     public String toString() {
-        return "Segment [id=" + getId() + ", origin=" + origin + ", destination=" + destination + ", departure=" + departure
-                + ", arrival=" + arrival + ", carrier=" + carrier + "]";
+        return "Segment [id=" + getId() + ", origin=" + origin + ", destination=" + destination + ", departure="
+                + departure + ", arrival=" + arrival + ", carrier=" + carrier + "]";
     }
 }

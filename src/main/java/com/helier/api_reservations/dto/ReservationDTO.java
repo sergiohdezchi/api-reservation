@@ -11,6 +11,7 @@ public class ReservationDTO {
     @Valid
     @NotEmpty(message = "Passenger list cannot be empty")
     private List<PassengerDTO> passengers;
+
     @Valid
     private ItineraryDTO itinerary;
 

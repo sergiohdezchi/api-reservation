@@ -86,7 +86,7 @@ public class Price extends Base {
 
     @Override
     public String toString() {
-        return "Price [id=" + getId() + ", totalPrice=" + totalPrice + ", totalTax=" + totalTax + ", basePrice=" + basePrice
-                + "]";
+        return "Price [id=" + getId() + ", totalPrice=" + totalPrice + ", totalTax=" + totalTax + ", basePrice="
+                + basePrice + "]";
     }
 }
